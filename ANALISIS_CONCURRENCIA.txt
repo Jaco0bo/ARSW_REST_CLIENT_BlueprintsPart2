@@ -1,0 +1,33 @@
+**ANALISIS_CONCURRENCIA.txt**
+
+**1. Contexto**
+En el componente **BlueprintsRESTAPI**, se tenia que manejar múltiples peticiones al mismo tiempo desde distintos hilos. Originalmente, el almacenamiento en memoria usaba un *HashMap*, pero esto no era seguro para hilos (*thread-safe*), así que tuve que buscar una solución que evitara condiciones de carrera sin aplicar una sincronización demasiado general que pudiera afectar el rendimiento.
+
+**2. Condiciones de carrera detectadas**
+Se identificaron varios problemas cuando hay ejecución concurrente:
+- Si dos hilos intentan crear el mismo *blueprint* al mismo tiempo, ambos podrían pasar la verificación `containsKey(key)` y luego hacer `put(key, bp)`, lo que resultaría en duplicados o que una escritura pise a la otra.
+- Al actualizar concurrentemente el mismo *blueprint*, un PUT podría sobrescribir los cambios del otro sin que nos demos cuenta.
+- Si un hilo está leyendo un *Blueprint* y otro modifica la lista de puntos al mismo tiempo, se podrían ver estados inconsistentes.
+- Además, el uso de *HashMap* con alta concurrencia podría dañar su estructura interna.
+
+**3. Regiones críticas**
+Las operaciones que más nos preocupaban eran aquellas que verifican y luego actúan (*check-then-act*), como en `saveBlueprint` y `modifyBluePrint`, donde se usaba `containsKey` seguido de `put`. También notamos que al devolver objetos mutables (como arrays o listas de puntos), se podían modificar desde fuera y alterar el estado interno.
+
+**4. Solución aplicada**
+Se decidio cambiar a **ConcurrentHashMap**:
+```java
+private final ConcurrentHashMap<Tuple<String, String>, Blueprint> blueprints = new ConcurrentHashMap<>();
+```
+Use operaciones atómicas como `putIfAbsent` para la creación (si retorna un valor distinto de *null*, es porque ya existía y lanza excepción) y `replace` para actualizaciones (si retorna *null*, es porque no existía y también lanza excepción). Así evitamos las condiciones de carrera sin bloquear todo con `synchronized`.
+
+También se aplico **copias defensivas**: cuando se devuelve *Blueprints* o sus puntos, se mandan copias para que los cambios externos no afecten los datos internos.
+
+Al final, me incline mas por la estrategia **B** (usar métodos atómicos de estructuras thread-safe) porque esto permitia manejar la concurrencia sin bajar mucho el rendimiento.
+
+**5. Pruebas realizadas / sugeridas**
+Se implementaron pruebas lanzando varios hilos que intentaban guardar *blueprints* con la misma clave y se verifico que solo uno tuviera éxito. También se verifico con escrituras concurrentes para asegurar que no hubiera corrupción de datos. Queda pendiente verificar bien que las copias defensivas funcionen como deberia, es decir, que al modificar una copia no se altere el objeto original.
+
+**6. Conclusión**
+Con el cambio a *ConcurrentHashMap* y el uso de sus operaciones atómicas, logramos eliminar las condiciones de carrera sin recurrir a sincronización general. Considero que es una solución eficiente y adecuada para el problema. Para hacerlo aún más robusto, sería buena idea implementar inmutabilidad o copias defensivas en las clases como *Blueprint* y *Point*. La verdad, fue un buen ejercicio para aplicar lo visto en clase sobre concurrencia.
+
+**FIN.**
