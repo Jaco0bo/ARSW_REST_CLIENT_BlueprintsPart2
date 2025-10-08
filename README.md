@@ -29,6 +29,12 @@
 
     	![](img/imagen5.png)
 
+		**Evidencias:**
+
+	    ![](img/prueba1.png)
+
+	    ![](img/prueba2.png)
+   
 4. Agregue el botón Save/Update. Respetando la arquitectura de módulos actual del cliente, haga que al oprimirse el botón:
 	1. Se haga PUT al API, con el plano actualizado, en su recurso REST correspondiente.
 	2. Se haga GET al recurso /blueprints, para obtener de nuevo todos los planos realizados.
