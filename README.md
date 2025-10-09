@@ -102,9 +102,22 @@
    		![](img/foto13.png)
 
 6. Agregue el botón 'DELETE', de manera que (también con promesas):
+
+   ![](img/foto14.png)
+
 	* Borre el canvas.
+
+       ![](img/foto15.png)
+
 	* Haga DELETE del recurso correspondiente.
+
+	  ![](img/foto16.png)
+
 	* Haga GET de los planos ahora disponibles.
+
+	  ![](img/foto17.png)
+
+	  ![](img/foto18.png)
 
 ### Criterios de evaluación
 
