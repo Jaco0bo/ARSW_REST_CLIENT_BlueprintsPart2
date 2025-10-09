@@ -105,28 +105,21 @@
 
    ![](img/foto14.png)
 
+   ![](img/foto15.png)
+
 	* Borre el canvas.
 
-       ![](img/foto15.png)
+		![](img/foto16.png)       
 
 	* Haga DELETE del recurso correspondiente.
 
-	  ![](img/foto16.png)
+		![](img/foto17.png)	  
 
 	* Haga GET de los planos ahora disponibles.
 
-	  ![](img/foto17.png)
-
 	  ![](img/foto18.png)
 
-### Criterios de evaluación
+### Demo Pagina
 
-1. Funcional
-	* La aplicación carga y dibuja correctamente los planos.
-	* La aplicación actualiza la lista de planos cuando se crea y almacena (a través del API) uno nuevo.
-	* La aplicación permite modificar planos existentes.
-	* La aplicación calcula correctamente los puntos totales.
-2. Diseño
-	* Los callback usados al momento de cargar los planos y calcular los puntos de un autor NO hace uso de ciclos, sino de operaciones map/reduce.
-	* Las operaciones de actualización y borrado hacen uso de promesas para garantizar que el cálculo del puntaje se realice sólo hasta cando se hayan actualizados los datos en el backend. Si se usan callbacks anidados se evalúa como R.
+
 	
