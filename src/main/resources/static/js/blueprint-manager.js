@@ -84,27 +84,20 @@ class BlueprintManager {
     }
 
     async saveOrUpdateCurrentBlueprint() {
-        console.log('=== SAVE/UPDATE STARTED ===');
-
         if (!this.currentBlueprint) {
             this.uiUpdater.showError("No blueprint selected to save.");
             return;
         }
-
-        console.log('Current blueprint points:', this.currentBlueprint.points.length);
-
         const payload = this.buildBlueprintPayload();
         const authorKey = this.normalizeAuthorKey(this.selectedAuthor);
         const blueprintName = this.currentBlueprint.name;
 
         try {
             if (this.isCreateMode) {
-                console.log('Creating new blueprint via POST');
                 await this.dataSource.postBlueprint(payload);
                 this.isCreateMode = false;
                 this.uiUpdater.showSuccess("Blueprint created successfully");
             } else {
-                console.log('Updating blueprint via PUT');
                 await this.dataSource.putBlueprint(authorKey, blueprintName, payload);
                 this.uiUpdater.showSuccess("Blueprint updated successfully");
             }

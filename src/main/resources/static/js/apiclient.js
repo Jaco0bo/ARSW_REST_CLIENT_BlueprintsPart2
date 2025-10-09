@@ -14,7 +14,6 @@ var apiclient = (function () {
                 method: options.method || options.type,
                 data: options.data
             });
-
             $.ajax({
                 ...options,
                 success: (data, status, xhr) => {
@@ -32,7 +31,6 @@ var apiclient = (function () {
                         responseText: xhr.responseText,
                         error: error
                     });
-
                     let errorMessage = "API request failed";
                     if (xhr.status === 404) {
                         errorMessage = "Resource not found";
@@ -43,7 +41,6 @@ var apiclient = (function () {
                     } else if (xhr.responseText) {
                         errorMessage = xhr.responseText;
                     }
-
                     reject(new Error(errorMessage));
                 }
             });
