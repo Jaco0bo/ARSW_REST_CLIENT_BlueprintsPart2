@@ -41,23 +41,21 @@
 
 	1. Se haga PUT al API, con el plano actualizado, en su recurso REST correspondiente.
 
-   ![](img/foto2.png)
+   		![](img/foto2.png)
 
-   ![](img/foto3.png)
-
-   ![](img/foto4.png)
+   		![](img/foto3.png)
 	
    2. Se haga GET al recurso /blueprints, para obtener de nuevo todos los planos realizados.
 
-   ![](img/foto5.png)
+	   ![](img/foto5.png)
 
-   ![](img/foto6.png)
+   	   ![](img/foto6.png)
 
-    3. Se calculen nuevamente los puntos totales del usuario.
+   3. Se calculen nuevamente los puntos totales del usuario.
 
-	![](img/foto7.png)
+   		![](img/foto7.png)
 
-	![](img/foto8.png)
+		![](img/foto8.png)
 
     Para lo anterior tenga en cuenta:
 
@@ -79,7 +77,7 @@
     ```
     * Como en este caso se tienen tres operaciones basadas en _callbacks_, y que las mismas requieren realizarse en un orden específico, tenga en cuenta cómo usar las promesas de JavaScript [mediante alguno de los ejemplos disponibles](http://codepen.io/hcadavid/pen/jrwdgK).
 
-	![](img/foto8.png)
+		![](img/foto4.png)
 
 5. Agregue el botón 'Create new blueprint', de manera que cuando se oprima: 
 	* Se borre el canvas actual.
