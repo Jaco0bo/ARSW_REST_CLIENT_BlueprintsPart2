@@ -9,7 +9,9 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import edu.eci.arsw.model.Blueprint;
+import edu.eci.arsw.model.Point;
 import edu.eci.arsw.persistence.BlueprintNotFoundException;
 import edu.eci.arsw.persistence.BlueprintPersistenceException;
 import edu.eci.arsw.services.BluePrintServices;
@@ -55,13 +57,22 @@ public class BlueprintAPIController {
     }
 
     @RequestMapping(path = "/{author}/{bpname}", method = RequestMethod.GET)
-    public ResponseEntity<?> getBlueprint(@PathVariable("author") String author, @PathVariable("bpname") String name) {
+    public ResponseEntity<?> getBluePrint(@PathVariable("author") String author, @PathVariable("bpname") String bpname) {
         try {
-            Blueprint data = services.getBlueprint(author, name);
-            return new ResponseEntity<>(data, HttpStatus.ACCEPTED);
-        } catch (BlueprintNotFoundException ex) {
-            Logger.getLogger(BluePrintServices.class.getName()).log(Level.SEVERE, null, ex);
-            return new ResponseEntity<>("NO SE ENCONTRO NINGUN PLANO POR ESE AUTOR", HttpStatus.NOT_FOUND);
+
+            Blueprint bp = services.getBlueprint(author, bpname);
+
+            if (bp != null) {
+                // CONVERTIR A JSON
+                ObjectMapper mapper = new ObjectMapper();
+                String json = mapper.writeValueAsString(bp);
+                return new ResponseEntity<>(bp, HttpStatus.ACCEPTED);
+            } else {
+                return new ResponseEntity<>("NO EXISTE EL AUTOR O PLANO", HttpStatus.NOT_FOUND);
+            }
+        } catch (Exception ex) {
+            Logger.getLogger(BlueprintAPIController.class.getName()).log(Level.SEVERE, null, ex);
+            return new ResponseEntity<>("ERROR BUSCANDO AUTOR O PLANO", HttpStatus.NOT_FOUND);
         }
     }
 
@@ -77,16 +88,31 @@ public class BlueprintAPIController {
     }
 
     @RequestMapping(path = "/{author}/{bpname}", method = RequestMethod.PUT)
-    public ResponseEntity<?> modifyBluePrint(@RequestBody Blueprint bp, @PathVariable("author") String author, @PathVariable("bpname") String bpname) {
+    public ResponseEntity<?> modifyBluePrint(@RequestBody Blueprint bp,
+                                             @PathVariable("author") String author,
+                                             @PathVariable("bpname") String bpname) {
         try {
-            if (!bp.getAuthor().equals(author) || !bp.getName().equals(bpname)) {
-                return new ResponseEntity<>("EL AUTOR O PLANO NO COINCIDE", HttpStatus.BAD_REQUEST);
-            }
             services.modifyBluePrint(bp);
-            return new ResponseEntity<>( HttpStatus.ACCEPTED);
+
+            return new ResponseEntity<>(HttpStatus.ACCEPTED);
         } catch (BlueprintPersistenceException ex) {
             Logger.getLogger(BluePrintServices.class.getName()).log(Level.SEVERE, null, ex);
             return new ResponseEntity<>("NO SE ENCONTRO NINGUN PLANO POR ESE AUTOR", HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @RequestMapping(path = "/{author}/{bpname}", method = RequestMethod.DELETE)
+    public ResponseEntity<?> deleteBlueprint(@PathVariable("author") String author,
+                                             @PathVariable("bpname") String name) {
+        try {
+            services.removeBlueprint(author, name);
+            return new ResponseEntity<>(HttpStatus.OK);
+        } catch (BlueprintNotFoundException ex) {
+            Logger.getLogger(BluePrintServices.class.getName()).log(Level.SEVERE, null, ex);
+            return new ResponseEntity<>("NO SE ENCONTRO NINGUN PLANO POR ESE AUTOR", HttpStatus.NOT_FOUND);
+        } catch (BlueprintPersistenceException ex) {
+            Logger.getLogger(BluePrintServices.class.getName()).log(Level.SEVERE, null, ex);
+            return new ResponseEntity<>("ERROR AL ELIMINAR PLANO", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }

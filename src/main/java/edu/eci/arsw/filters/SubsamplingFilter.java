@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Component("subsamplingFilter")
-@Primary
 public class SubsamplingFilter implements BluePrintsFilter {
     @Override
     public Blueprint applyFilter(Blueprint bp) {

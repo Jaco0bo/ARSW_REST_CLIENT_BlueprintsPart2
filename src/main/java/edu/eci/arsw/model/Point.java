@@ -1,43 +1,39 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package edu.eci.arsw.model;
 
-/**
- *
- * @author hcadavid
- */
+import java.util.Objects;
+
 public class Point {
-   
-    private int x;
-    private int y;
+    private double x;
+    private double y;
 
-    public Point(int x, int y) {
+    public Point() {}
+
+    public Point(double x, double y) {
         this.x = x;
         this.y = y;
     }
 
-    public Point() {
-    }    
-    
-    public int getX() {
-        return x;
+    public double getX() { return x; }
+    public void setX(double x) { this.x = x; }
+    public double getY() { return y; }
+    public void setY(double y) { this.y = y; }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        Point point = (Point) obj;
+        return Double.compare(point.x, x) == 0 &&
+                Double.compare(point.y, y) == 0;
     }
 
-    public void setX(int x) {
-        this.x = x;
+    @Override
+    public int hashCode() {
+        return Objects.hash(x, y);
     }
 
-    public int getY() {
-        return y;
+    @Override
+    public String toString() {
+        return "Point{x=" + x + ", y=" + y + '}';
     }
-
-    public void setY(int y) {
-        this.y = y;
-    }
-    
-    
-    
 }

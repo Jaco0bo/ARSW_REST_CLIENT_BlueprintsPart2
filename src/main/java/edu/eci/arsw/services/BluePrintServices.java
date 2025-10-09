@@ -67,6 +67,12 @@ public class BluePrintServices {
         }
         return filter.applyFilter(blueprint);
     }
+
+    public Blueprint getBlueprintRaw(String author, String name) throws BlueprintNotFoundException {
+        Blueprint blueprint = bpp.getBlueprint(author, name);
+        if (blueprint == null) throw new BlueprintNotFoundException("Blueprint not found for author: " + author + " and name: " + name);
+        return blueprint;
+    }
     
     /**
      * 
@@ -87,5 +93,9 @@ public class BluePrintServices {
         }
 
         return filtered;
+    }
+
+    public void removeBlueprint(String author, String name) throws BlueprintNotFoundException, BlueprintPersistenceException {
+        bpp.deleteBlueprint(author, name);
     }
 }

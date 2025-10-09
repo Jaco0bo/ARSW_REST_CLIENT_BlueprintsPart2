@@ -1,4 +1,3 @@
-
 package edu.eci.arsw.model;
 
 import java.util.ArrayList;
@@ -6,48 +5,62 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
+public class Blueprint {
+    private String author;
+    private List<Point> points;
+    private String name;
 
-public class    Blueprint {
-
-    private String author=null;
-    
-    private List<Point> points=null;
-    
-    private String name=null;
-            
-    public Blueprint(String author,String name,Point[] pnts){
-        this.author=author;
-        this.name=name;
-        points=Arrays.asList(pnts);
+    public Blueprint(String author, String name, Point[] pnts) {
+        this.author = author;
+        this.name = name;
+        this.points = new ArrayList<>(Arrays.asList(pnts));
     }
-         
-    public Blueprint(String author, String name){
-        this.name=name;
-        points=new ArrayList<>();
+
+    public Blueprint(String author, String name) {
+        this.author = author;
+        this.name = name;
+        this.points = new ArrayList<>();
     }
 
     public Blueprint() {
-    }    
-    
+        this.points = new ArrayList<>();
+    }
+
+
     public String getName() {
         return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getAuthor() {
         return author;
     }
-    
+
+    public void setAuthor(String author) {
+        this.author = author;
+    }
+
     public List<Point> getPoints() {
         return points;
     }
-    
-    public void addPoint(Point p){
+
+    public void setPoints(List<Point> points) {
+        this.points = points != null ? points : new ArrayList<>();
+    }
+
+    public void addPoint(Point p) {
+        if (this.points == null) {
+            this.points = new ArrayList<>();
+        }
         this.points.add(p);
     }
 
     @Override
     public String toString() {
-        return "Blueprint{" + "author=" + author + ", name=" + name + '}';
+        return "Blueprint{author=" + author + ", name=" + name + ", points=" + (points != null ? points.size() : 0) + "}";
     }
 
     @Override
@@ -73,11 +86,17 @@ public class    Blueprint {
         if (!Objects.equals(this.name, other.name)) {
             return false;
         }
-        if (this.points.size()!=other.points.size()){
+        if (this.points == null && other.points == null) {
+            return true;
+        }
+        if (this.points == null || other.points == null) {
             return false;
         }
-        for (int i=0;i<this.points.size();i++){
-            if (this.points.get(i).equals(other.points.get(i))){
+        if (this.points.size() != other.points.size()) {
+            return false;
+        }
+        for (int i = 0; i < this.points.size(); i++) {
+            if (!this.points.get(i).equals(other.points.get(i))) {
                 return false;
             }
         }

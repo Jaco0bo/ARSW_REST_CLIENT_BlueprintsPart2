@@ -13,6 +13,12 @@
 
     <script src="/js/apimock.js"></script>
     <script src="/js/apiclient.js"></script>
+
+    <!-- CORREGIR: Cargar las clases en el orden correcto -->
+    <script src="/js/canvas-renderer.js"></script>
+    <script src="/js/ui-updater.js"></script>
+    <script src="/js/event-handler.js"></script>
+    <script src="/js/blueprint-manager.js"></script>
     <script src="/js/app.js"></script>
 </head>
 <body>
@@ -20,44 +26,86 @@
     <h1 class="mb-4">Blueprints</h1>
 
     <div class="row">
-
         <div class="col-md-6">
-            <div class="d-flex gap-2 align-items-center mb-4">
-                <label for="authorInput" class="form-label mb-0 fw-bold">Author</label>
-                <input id="authorInput" type="text" class="form-control" placeholder="JohnConnor" />
-                <button id="getBlueprintsBtn" class="btn btn-primary flex-shrink-0">Get blueprints</button>
+            <!-- Sección de búsqueda -->
+            <div class="card mb-3">
+                <div class="card-body">
+                    <div class="d-flex gap-2 align-items-center">
+                        <label for="authorInput" class="form-label mb-0 fw-bold">Author</label>
+                        <input id="authorInput" type="text" class="form-control" placeholder="JohnConnor" />
+                        <button id="getBlueprintsBtn" class="btn btn-primary flex-shrink-0">Get blueprints</button>
+                    </div>
+                </div>
             </div>
 
-            <h2 id="selectedAuthor" class="h4" aria-live="polite"></h2>
-
-            <div class="table-responsive mb-3">
-                <table id="blueprintsTable" class="table table-bordered">
-                    <thead>
-                    <tr>
-                        <th scope="col">Blueprint name</th>
-                        <th scope="col">Number of points</th>
-                        <th scope="col">Open</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    </tbody>
-                </table>
+            <!-- Información del autor seleccionado -->
+            <div id="authorInfo" class="mb-3">
+                <h2 id="selectedAuthor" class="h4" aria-live="polite"></h2>
+                <div id="currentBlueprintName" class="mb-2 fw-medium text-primary"></div>
             </div>
 
-            <div id="totalPoints" class="mt-3 fw-bold h5"></div>
+            <!-- Tabla de blueprints -->
+            <div class="card mb-3">
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table id="blueprintsTable" class="table table-bordered table-hover">
+                            <thead class="table-light">
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">Blueprint name</th>
+                                <th scope="col">Author</th>
+                                <th scope="col">Number of points</th>
+                                <th scope="col">Action</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <!-- Las filas se generarán dinámicamente -->
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div id="totalPoints" class="mt-3 fw-bold h5"></div>
+                </div>
+            </div>
+
+            <!-- Botones de acciones - MOVER AQUÍ -->
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex gap-2 flex-wrap">
+                        <button id="createBlueprintBtn" class="btn btn-success">Create new blueprint</button>
+                        <button id="saveBlueprintBtn" class="btn btn-primary">Save / Update</button>
+                        <button id="deleteBlueprintBtn" class="btn btn-danger">Delete</button>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <div class="col-md-6">
-            <h3 id="currentBlueprintName" class="h5 mb-2"></h3>
-            <canvas id="blueprintCanvas" width="600" height="400" style="border:1px solid #ccc; width:100%; height:auto;"></canvas>
+            <!-- Canvas -->
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Blueprint Canvas</h5>
+                    <canvas id="blueprintCanvas" width="600" height="400"
+                            style="border:1px solid #ddd; border-radius:4px; width:100%; height:auto; background:#f8f9fa;">
+                    </canvas>
+                    <div class="mt-2 text-muted small">
+                        Click on the canvas to add points to the current blueprint
+                    </div>
+                </div>
+            </div>
         </div>
-
     </div>
 </div>
 
 <script>
-    $(function(){ // shorthand de document.ready
-        app.init();
+    // Espera a que el DOM esté completamente cargado
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('DOM loaded, initializing app...');
+        if (typeof app !== 'undefined' && app.init) {
+            app.init();
+        } else {
+            console.error('App not found or init function missing');
+        }
     });
 </script>
 </body>

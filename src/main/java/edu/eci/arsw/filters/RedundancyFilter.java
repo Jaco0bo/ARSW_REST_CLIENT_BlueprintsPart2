@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Component("redundancyFilter")
-// @Primary // mover esta anotación al otro filtro para cambiar el comportamiento global
+@Primary // mover esta anotación al otro filtro para cambiar el comportamiento global
 public class RedundancyFilter implements BluePrintsFilter{
     @Override
     public Blueprint applyFilter(Blueprint bp) {

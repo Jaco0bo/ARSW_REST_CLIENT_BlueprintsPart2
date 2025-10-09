@@ -13,10 +13,7 @@ import edu.eci.arsw.persistence.BlueprintPersistenceException;
 import edu.eci.arsw.persistence.BlueprintsPersistence;
 import org.springframework.stereotype.Repository;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -55,21 +52,29 @@ public class InMemoryBlueprintPersistence implements BlueprintsPersistence{
     }
 
     @Override
-    public void modifyBluePrint(Blueprint bp) throws BlueprintPersistenceException {
+    public synchronized void modifyBluePrint(Blueprint bp) throws BlueprintPersistenceException {
         Tuple<String, String> key = new Tuple<>(bp.getAuthor(), bp.getName());
-        Blueprint existing = blueprints.replace(key, bp);
-        if (existing == null) {
-            throw new BlueprintPersistenceException("The given blueprint does not exist: " + bp);
+        if (!blueprints.containsKey(key)) {
+            throw new BlueprintPersistenceException("Blueprint not found: " + bp);
         }
+
+        // CREAR COPIA PROFUNDA
+        Blueprint newBlueprint = new Blueprint(bp.getAuthor(), bp.getName());
+        if (bp.getPoints() != null) {
+            List<Point> pointsCopy = new ArrayList<>();
+            for (Point p : bp.getPoints()) {
+                pointsCopy.add(new Point(p.getX(), p.getY()));
+            }
+            newBlueprint.setPoints(pointsCopy);
+        }
+        blueprints.put(key, newBlueprint);
     }
 
     @Override
-    public Blueprint getBlueprint(String author, String bprintname) throws BlueprintNotFoundException {
-        Blueprint blueprint = blueprints.get(new Tuple<>(author, bprintname));
-        if (blueprint == null) {
-            throw new BlueprintNotFoundException("Blueprint not found for author: " + author + " and name: " + bprintname);
-        }
-        return deepCopyBlueprint(blueprint);
+    public synchronized Blueprint getBlueprint(String author, String name) {
+        Tuple<String, String> key = new Tuple<>(author, name);
+        Blueprint bp = blueprints.get(key);
+        return bp;
     }
 
     @Override
@@ -106,6 +111,15 @@ public class InMemoryBlueprintPersistence implements BlueprintsPersistence{
         } catch (BluePrintError ex) {
             throw new BluePrintError("Error setting blueprint: " + ex);
         }
+    }
+
+    @Override
+    public void deleteBlueprint(String author, String name) throws BlueprintNotFoundException {
+        Tuple<String, String> bpKey = new Tuple<>(author, name);
+        if (!blueprints.containsKey(bpKey)) {
+            throw new BlueprintNotFoundException("No se encontró el plano '" + name + "' del autor '" + author + "' para eliminar.");
+        }
+        blueprints.remove(bpKey);
     }
 
     private Blueprint deepCopyBlueprint(Blueprint bp) {
