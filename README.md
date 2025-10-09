@@ -37,6 +37,8 @@
    
 4. Agregue el botón Save/Update. Respetando la arquitectura de módulos actual del cliente, haga que al oprimirse el botón:
 
+   Se implementó un botón **Save/Update** que al presionarse reúne la geometría actual del canvas, construye el objeto ``blueprint`` y envía un ``PUT`` al recurso REST correspondiente (``/blueprints/{author}/{name}``) usando ``$.ajax`` con ``JSON.stringify``. Al resolverse el ``PUT`` encadenamos (promesas) un ``GET /blueprints`` para refrescar la lista completa de planos en la UI y, finalmente, recalculamos el puntaje total del usuario sumando la cantidad de puntos de todos sus planos y actualizamos la vista. Se manejan errores con ``catch`` y se muestran mensajes al usuario.
+
    ![](img/foto1.png)	
 
 	1. Se haga PUT al API, con el plano actualizado, en su recurso REST correspondiente.
@@ -79,7 +81,9 @@
 
 		![](img/foto4.png)
 
-5. Agregue el botón 'Create new blueprint', de manera que cuando se oprima: 
+5. Agregue el botón 'Create new blueprint', de manera que cuando se oprima:
+
+   Se añadió un botón **Create new blueprint** que limpia el canvas y pide al usuario el nombre del nuevo plano (modal/``prompt``). Al guardar por primera vez se hace un ``POST /blueprints`` con el nuevo ``blueprint`` (JSON), y tras el ``POST`` encadenado se realiza un ``GET /blueprints`` para actualizar la lista y recalcular el puntaje del usuario. La opción de “guardar” cambió su flujo: si el plano es nuevo usa ``POST`` (crear), si existe usa ``PUT`` (actualizar).
 
    ![](img/foto9.png)
 	
@@ -102,6 +106,8 @@
    		![](img/foto13.png)
 
 6. Agregue el botón 'DELETE', de manera que (también con promesas):
+
+   Se agregó el botón **DELETE** que, tras confirmar la acción, borra el canvas, realiza un ``DELETE`` al recurso correspondiente (``/blueprints/{author}/{name}``) y luego encadena un ``GET /blueprints`` para obtener la lista actualizada y recalcular los puntos. Todo el flujo usa promesas para garantizar el orden correcto y maneja errores/confirmaciones para que el usuario no pierda datos sin querer.
 
    ![](img/foto14.png)
 
