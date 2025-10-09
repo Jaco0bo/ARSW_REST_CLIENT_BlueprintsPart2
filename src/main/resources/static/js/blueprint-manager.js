@@ -142,7 +142,6 @@ class BlueprintManager {
 
         this.canvasRenderer.clearCanvas();
         this.uiUpdater.updateCurrentBlueprintName("New: " + newName);
-
         // No añadir inmediatamente al summary - esperar a que se guarde
         this.uiUpdater.showSuccess("New blueprint created. Add points and click Save.");
     }
